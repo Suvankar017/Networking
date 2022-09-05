@@ -34,6 +34,14 @@ public:
 
 int main()
 {
+	std::chrono::milliseconds delay(10ull);
+	DEVMODE mode = {0};
+	if (EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &mode))
+	{
+		delay = std::chrono::milliseconds(unsigned long long(1000.0 / (double)mode.dmDisplayFrequency));
+		std::cout << "Framerate: " << mode.dmDisplayFrequency << " FPS" << std::endl;
+	}
+
 	CustomClient c;
 	c.Connect("127.0.0.1", 60000);
 
@@ -107,6 +115,9 @@ int main()
 			break;
 			}
 		}
+
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(delay);
 	}
 
 	return 0;
